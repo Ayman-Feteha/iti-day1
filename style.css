@@ -14,7 +14,14 @@ p {
     line-height: 1.5;
     color: #666;
 }
-
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 footer {
     text-align: center;
     padding: 1em 0;
