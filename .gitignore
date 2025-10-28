@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+*.egg
+
+# Django
+*.log
+local_settings.py
+staticfiles/
+media/
+
+# SQLite
+db.sqlite3
+
+# Environments
+.env
+.env.*
+venv/
+ENV/
+.venv/
+
+# VS Code
+.vscode/
+
+# Migrations cache
+**/migrations/**__pycache__/
+
+# Byte-compiled / optimized / DLL files
+*$py.class
+
+# Pytest
+.pytest_cache/
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+
+# mypy
+.mypy_cache/
+.dmypy.json
+**/.mypy_cache/
+
+# Mac/OSX and Linux
+.DS_Store
+.Trashes
+.idea/
