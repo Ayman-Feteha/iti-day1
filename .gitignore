@@ -48,3 +48,6 @@ htmlcov/
 .DS_Store
 .Trashes
 .idea/
+
+# From remote
+directory_to_ignore/
