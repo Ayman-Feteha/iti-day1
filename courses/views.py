@@ -5,17 +5,17 @@ from .models import Course
 from .serializers import CourseSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-from .permissions import IsTeacher, IsTeacherOrStudentReadOnly
+from .permissions import role_required
 # Create your views here.
 
 @api_view(['GET'])
-@permission_classes([IsTeacherOrStudentReadOnly])
+@role_required('teacher', 'student')
 def course_list(request):
     courses = Course.objects.all()
     return JsonResponse({'courses': list(courses.values())})
 
 @api_view(['GET'])
-@permission_classes([IsTeacherOrStudentReadOnly])
+@role_required('teacher', 'student')
 def course_detail(request, pk):
     try:
         course = Course.objects.get(pk=pk)
@@ -28,7 +28,7 @@ def course_detail(request, pk):
 
 @csrf_exempt
 @api_view(['POST'])
-@permission_classes([IsTeacher])
+@role_required('teacher')
 def course_create(request):
     data = request.data
     course = Course.objects.create(
@@ -44,7 +44,7 @@ def course_create(request):
                          'end_date': course.end_date}, status=201)
 
 @api_view(['PUT'])
-@permission_classes([IsTeacher])
+@role_required('teacher')
 def course_update(request, pk):
     try:
         course = Course.objects.get(pk=pk)
@@ -65,7 +65,7 @@ def course_update(request, pk):
                          'end_date': course.end_date}, status=200)
 
 @api_view(['DELETE'])
-@permission_classes([IsTeacher])
+@role_required('teacher')
 def course_delete(request, pk):
     try:
         course = Course.objects.get(pk=pk)
@@ -75,7 +75,7 @@ def course_delete(request, pk):
         return JsonResponse({'error': 'Course not found'}, status=404)
     
 @api_view(['PATCH'])
-@permission_classes([IsTeacher])
+@role_required('teacher')
 def course_partial_update(request, pk):
     try:
         course = Course.objects.get(pk=pk)
