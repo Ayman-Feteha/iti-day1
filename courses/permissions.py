@@ -1,27 +1,83 @@
 from rest_framework.permissions import BasePermission
-from rest_framework.decorators import permission_classes
-from django.http import JsonResponse
-from functools import wraps
 
-def role_required(*allowed_roles):
+
+class IsTeacher(BasePermission):
     """
-    Decorator to check if user has one of the required roles.
-    Usage: @role_required('teacher', 'student')
+    Custom permission to only allow teachers to access the view.
     """
-    def decorator(view_func):
-        @wraps(view_func)
-        def wrapper(request, *args, **kwargs):
-            if not request.user.is_authenticated:
-                return JsonResponse({'error': 'Authentication credentials were not provided'}, status=401)
-            
-            for role in allowed_roles:
-                try:
-                    getattr(request.user, role)
-                    return view_func(request, *args, **kwargs)
-                except:
-                    pass
-            
-            return JsonResponse({'error': f'Only users with roles {allowed_roles} can access this'}, status=403)
+    message = "Only teachers can perform this action."
+    
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
         
-        return wrapper
-    return decorator
+        try:
+            request.user.teacher
+            return True
+        except:
+            return False
+
+
+class IsStudent(BasePermission):
+    """
+    Custom permission to only allow students to access the view.
+    """
+    message = "Only students can perform this action."
+    
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+        
+        try:
+            request.user.student
+            return True
+        except:
+            return False
+
+
+class IsTeacherOrStudent(BasePermission):
+    """
+    Custom permission to allow both teachers and students to access the view.
+    """
+    message = "Only teachers or students can perform this action."
+    
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+        
+        try:
+            request.user.teacher
+            return True
+        except:
+            pass
+        
+        try:
+            request.user.student
+            return True
+        except:
+            return False
+
+
+class IsTeacherOrStudentReadOnly(BasePermission):
+    """
+    Custom permission to allow teachers full access and students read-only access.
+    """
+    message = "You do not have permission to perform this action."
+    
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+        
+        # Teachers have full access
+        try:
+            request.user.teacher
+            return True
+        except:
+            pass
+        
+        # Students only have read access
+        try:
+            request.user.student
+            return request.method in ['GET', 'HEAD', 'OPTIONS']
+        except:
+            return False
